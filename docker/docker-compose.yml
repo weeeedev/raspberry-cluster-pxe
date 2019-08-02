@@ -1,0 +1,20 @@
+# Docker compose file for running the required servers for PXE boot, sans DHCP
+
+version: "3.7"
+services:
+  tftp:
+    image: pghalliday/tftp:latest
+    volumes:
+      - "./share/tftp:/var/tftpboot"
+    ports:
+      - "69:69/udp"
+  nfs:
+    image: itsthenetwork/nfs-server-alpine:12
+    privileged: true
+    volumes:
+      - "./share/:/share/"
+    environment:
+      - "SHARED_DIRECTORY=/share"
+      - "SYNC=true"
+    ports:
+      - "2049:2049"
